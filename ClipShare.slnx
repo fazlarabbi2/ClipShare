@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ClipShare.Core/ClipShare.Core.csproj" />
+  <Project Path="ClipShare.DataAccess/ClipShare.DataAccess.csproj" />
+  <Project Path="ClipShare/ClipShare.csproj" />
+</Solution>
