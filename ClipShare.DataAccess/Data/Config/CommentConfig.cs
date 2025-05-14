@@ -14,12 +14,12 @@ namespace DataAccess.Data.Config
             builder.HasOne(a => a.AppUser)
                    .WithMany(a => a.Comments)
                    .HasForeignKey(c => c.AppUserId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(a => a.Video)
                    .WithMany(c => c.Comments)
                    .HasForeignKey(c => c.VideoId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

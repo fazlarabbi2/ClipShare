@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClipShare.DataAccess.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250513122517_Init")]
+    [Migration("20250514152502_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -417,13 +417,13 @@ namespace ClipShare.DataAccess.Data.Migrations
                     b.HasOne("ClipShare.Entities.AppUser", "AppUser")
                         .WithMany("Comments")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ClipShare.Entities.Video", "Video")
                         .WithMany("Comments")
                         .HasForeignKey("VideoId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AppUser");
@@ -436,13 +436,13 @@ namespace ClipShare.DataAccess.Data.Migrations
                     b.HasOne("ClipShare.Entities.AppUser", "AppUser")
                         .WithMany("LikeDislikes")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ClipShare.Entities.Video", "Video")
                         .WithMany("LikeDislikes")
                         .HasForeignKey("VideoId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ClipShare.Entities.Subscribe", null)
@@ -459,13 +459,13 @@ namespace ClipShare.DataAccess.Data.Migrations
                     b.HasOne("ClipShare.Entities.AppUser", "AppUser")
                         .WithMany("Subscriptions")
                         .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ClipShare.Entities.Channel", "Channel")
                         .WithMany("Subscribers")
                         .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AppUser");

@@ -216,12 +216,14 @@ namespace ClipShare.DataAccess.Data.Migrations
                         name: "FK_Subscribe_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Subscribe_Channel_ChannelId",
                         column: x => x.ChannelId,
                         principalTable: "Channel",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -271,12 +273,14 @@ namespace ClipShare.DataAccess.Data.Migrations
                         name: "FK_Comment_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comment_Video_VideoId",
                         column: x => x.VideoId,
                         principalTable: "Video",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,7 +300,8 @@ namespace ClipShare.DataAccess.Data.Migrations
                         name: "FK_LikeDislike_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LikeDislike_Subscribe_SubscribeAppUserId_SubscribeChannelId",
                         columns: x => new { x.SubscribeAppUserId, x.SubscribeChannelId },
@@ -306,7 +311,8 @@ namespace ClipShare.DataAccess.Data.Migrations
                         name: "FK_LikeDislike_Video_VideoId",
                         column: x => x.VideoId,
                         principalTable: "Video",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

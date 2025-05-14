@@ -14,12 +14,12 @@ namespace DataAccess.Data.Config
             builder.HasOne(a => a.AppUser)
                  .WithMany(a => a.Subscriptions)
                  .HasForeignKey(c => c.AppUserId)
-                 .OnDelete(DeleteBehavior.NoAction);
+                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(a => a.Channel)
                    .WithMany(c => c.Subscribers)
                    .HasForeignKey(c => c.ChannelId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
