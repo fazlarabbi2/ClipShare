@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ClipShare.DataAccess.Migrations
+namespace ClipShare.DataAccess.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250506155532_Init")]
+    [Migration("20250513122517_Init")]
     partial class Init
     {
         /// <inheritdoc />

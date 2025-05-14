@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ClipShare.DataAccess.Migrations
+namespace ClipShare.DataAccess.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -57,7 +58,7 @@ namespace ClipShare.DataAccess.Migrations
                         column: x => x.AppUsersId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
