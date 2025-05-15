@@ -1,6 +1,8 @@
 using ClipShare.DataAccess.Data;
+using ClipShare.Entities;
 using ClipShare.Extensions;
 using DataAccess.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClipShare
 {
@@ -13,6 +15,7 @@ namespace ClipShare
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.AddApplicationServices();
+            builder.AddAuthenticationServices();
 
             var app = builder.Build();
 
@@ -26,6 +29,7 @@ namespace ClipShare
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -34,12 +38,12 @@ namespace ClipShare
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
-            
-            InitializeContext();
+
+            InitializeContextAsync();
             app.Run();
 
 
-            void InitializeContext()
+            async Task InitializeContextAsync()
             {
                 using var scope = app.Services.CreateScope();
                 var services = scope.ServiceProvider;
@@ -47,7 +51,11 @@ namespace ClipShare
                 try
                 {
                     var context = scope.ServiceProvider.GetService<Context>();
-                    ContextInitializer.Initialize(context);
+                    var userManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+                    var roleManager = scope.ServiceProvider.GetService<RoleManager<AppRole>>();
+
+
+                    await ContextInitializer.InitializeAsync(context, roleManager, userManager);
                 }
                 catch (Exception ex)
                 {
