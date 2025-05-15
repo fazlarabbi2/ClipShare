@@ -8,8 +8,8 @@ namespace ClipShare.Entities
         [Required]
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public AppUser AppUsers { get; set; }
 
+        public Channel Channel;
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Subscribe> Subscriptions { get; set; }
         public ICollection<LikeDislike> LikeDislikes { get; set; }

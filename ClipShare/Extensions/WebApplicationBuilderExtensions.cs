@@ -3,6 +3,7 @@ using DataAccess.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ClipShare.Extensions
 {
@@ -20,7 +21,7 @@ namespace ClipShare.Extensions
 
         public static WebApplicationBuilder AddAuthenticationServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddIdentityCore<AppUser>(options =>
+            builder.Services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = true;
@@ -28,10 +29,9 @@ namespace ClipShare.Extensions
                 options.Password.RequireLowercase = false;
                 options.SignIn.RequireConfirmedEmail = false;
                 options.Lockout.AllowedForNewUsers = false;
-            }).AddRoles<AppRole>()
-            .AddRoleManager<RoleManager<AppRole>>()
-            .AddUserManager<UserManager<AppUser>>()
-            .AddEntityFrameworkStores<Context>();
+            })
+            .AddEntityFrameworkStores<Context>()
+            .AddDefaultTokenProviders();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {

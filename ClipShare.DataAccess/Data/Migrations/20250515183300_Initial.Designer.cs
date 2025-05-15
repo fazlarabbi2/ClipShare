@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClipShare.DataAccess.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250514152502_Init")]
-    partial class Init
+    [Migration("20250515183300_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -64,9 +64,6 @@ namespace ClipShare.DataAccess.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AppUsersId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -121,8 +118,6 @@ namespace ClipShare.DataAccess.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUsersId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -388,17 +383,6 @@ namespace ClipShare.DataAccess.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("ClipShare.Entities.AppUser", b =>
-                {
-                    b.HasOne("ClipShare.Entities.AppUser", "AppUsers")
-                        .WithMany()
-                        .HasForeignKey("AppUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUsers");
                 });
 
             modelBuilder.Entity("ClipShare.Entities.Channel", b =>
