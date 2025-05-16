@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClipShare.DataAccess.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250515183300_Initial")]
+    [Migration("20250516040326_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
