@@ -12,12 +12,17 @@
                 <div class="form-floating mt-5 mb-3">
                     <input asp-for="UserName" class="form-control" />
                     <label asp-for="UserName" class="form-label"></label>
+                    <span asp-validation-for="UserName" class="invalid-feedback"></span>
                 </div>
                 <div class="form-floating mt-5 mb-3">
                     <input asp-for="Password" type="password" class="form-control" />
                     <label asp-for="Password" class="form-label"></label>
+                    <span asp-validation-for="Password" class="invalid-feedback"></span>
                 </div>
 
+                <div class="form-floating">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                </div>
                 <div class="d-grid mt-4 px-1">
                     <button class="btn btn-lg btn-info" type="submit">
                         Login
@@ -28,3 +33,7 @@
         </main>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

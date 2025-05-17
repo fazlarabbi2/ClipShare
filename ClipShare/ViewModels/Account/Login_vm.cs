@@ -10,13 +10,11 @@ namespace ClipShare.ViewModels.Account
         public string UserName
         {
             get => _userName;
-            set => _userName = value?.ToLower();
+            set => _userName = !string.IsNullOrEmpty(value) ? value.ToLower() : null;
         }
 
-        [Required(ErrorMessage = "Password is Required")]
-        [DataType(DataType.Password)]
+        [Required(ErrorMessage = "Password is Required"), DataType(DataType.Password)]
         public string Password { get; set; }
-
         public string ReturnUrl { get; set; }
     }
 }

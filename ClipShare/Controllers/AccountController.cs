@@ -15,5 +15,21 @@ namespace ClipShare.Controllers
             };
             return View(loginVm);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(Login_vm model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            model.ReturnUrl = model.ReturnUrl??Url.Content("~/");
+
+            var user = await userManager.FindByNameAsync(model.UserName);
+
+            return View(model);
+        }
     }
 }
