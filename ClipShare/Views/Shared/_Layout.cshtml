@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,19 +23,37 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark @Html.IsActive("Home", "Index" )" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark @Html.IsActive("Home", "Index")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark @Html.IsActive("Home", "Privacy")" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
 
-                    <div class="me-1">
-                        <a class="btn btn-secondary me-2 @Html.IsActive("Account", "Login")" asp-controller="Account" asp-action="Login">
-                            <i class="bi bi-door-open-fill"></i>
-                            Login
-                        </a>
-                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <span class="nav-link text-info-emphasis">@User.Identity.Name</span>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="btn btn-secondary" asp-controller="Account" asp-action="Logout">
+                                    <i class="bi bi-door-open-fill"></i>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="me-1">
+                            <a class="btn btn-secondary me-2 @Html.IsActive("Account", "Login")" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-door-open-fill"></i>
+                                Login
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
