@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ClipShare.Core/ClipShare.Core.csproj" Id="bcd1ea22-ee1a-4bbc-9616-d9c0ba1970bf" />
+  <Project Path="ClipShare.DataAccess/ClipShare.DataAccess.csproj" Id="4d19738b-4f7d-4104-ac8f-1396992ff481" />
+  <Project Path="ClipShare.Utility/ClipShare.Utility.csproj" Id="143f6c71-64e6-4241-b091-8126e10d74ed" />
+  <Project Path="ClipShare/ClipShare.csproj" />
+</Solution>
