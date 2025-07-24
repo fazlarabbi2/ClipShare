@@ -1,5 +1,4 @@
-﻿using ClipShare.DataAccess.Repo;
-using ClipShare.Entities;
+﻿using ClipShare.Entities;
 using ClipShare.Extensions;
 using ClipShare.Utility;
 using ClipShare.ViewModels;

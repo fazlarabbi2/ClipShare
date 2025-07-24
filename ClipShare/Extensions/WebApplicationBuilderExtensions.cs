@@ -20,7 +20,7 @@ namespace ClipShare.Extensions
         {
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("OfficeConnections"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnections"));
             });
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

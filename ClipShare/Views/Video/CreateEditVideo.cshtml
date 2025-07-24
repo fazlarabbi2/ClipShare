@@ -8,36 +8,42 @@
     </div>
 
     <div class="card-body">
-        <form asp-action="CreateEditVideo" enctype="multipart/form-data" method="post">
+        <form asp-action="CreateEditVideo" id="videoForm" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <input type="hidden" id="videoId" asp-for="Id" />
+            <input type="hidden" id="imageUrl" asp-for="ImageUrl" />
 
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label asp-for="CategoryId" class="form-label"></label>
                         <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryDropDown">
-                            <option disabled>Select Here</option>
+                            <option disabled selected>Select Here</option>
                         </select>
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label"></label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label"></label>
-                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
                     <div class="mb-3">
                         <div class="card mb-2 rounded bg-secondary" id="previewImage" aria-label="Image preview"></div>
                         <label asp-for="ImageUpload" class="form-label"></label>
@@ -54,18 +60,28 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-muted text-center">
-                <button class="btn btn-success" type="submit">Save</button>
-                <a class="btn btn-warning" asp-controller="Channel" asp-action="Index">Back</a>
-            </div>
         </form>
+    </div>
+
+    <div class="card-footer text-muted text-center">
+        <button class="btn btn-success" type="submit" form="videoForm">Save</button>
+        <a class="btn btn-warning" asp-controller="Channel" asp-action="Index">Back</a>
     </div>
 </div>
 
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-     <script>
+    <script>
+        $(function(){
+            // display preview Image
+            if($('#videoId').val() > 0){
+                $('#videoUpload').prop("disabled", true);
+
+                const url = $('#imageUrl').val();
+                $('#previewImage').append(`<img src="${url}" class="card-img-top rounded preview-image"/>`);
+            }
+        })
+
         $('#imageUpload').on('change', function(){
             if(this.files){
                 $('#previewImage').empty();
@@ -74,8 +90,7 @@
                 reader.onload = function(event){
                     $('#previewImage').append(`<img src="${event.target.result}" class="card-img-top rounded preview-image"/>`);
                 }
-
-              
+                reader.readAsDataURL(this.files[0]);
             }
         });
     </script>

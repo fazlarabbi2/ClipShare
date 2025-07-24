@@ -44,7 +44,7 @@ namespace ClipShare.Services
 
             photo.CopyTo(fileStream);
 
-            return @"\images\thumbnails" + fileName + extension;
+            return @"\images\thumbnails\" + fileName + extension;
         }
     }
 }

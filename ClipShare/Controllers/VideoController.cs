@@ -1,10 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Threading.Tasks;
-using ClipShare.Entities;
+﻿using ClipShare.Entities;
 using ClipShare.Extensions;
 using ClipShare.Services.IServices;
 using ClipShare.Utility;
@@ -12,10 +6,12 @@ using ClipShare.ViewModels.Video;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClipShare.Controllers
 {
@@ -40,13 +36,36 @@ namespace ClipShare.Controllers
                 return RedirectToAction("Index", "Channel");
             }
 
-            var toReturn = new VideoAddEdit_Vm();
-            toReturn.ImageContentTypes = string.Join(",", AcceptableContentTypes("image"));
-            toReturn.VideoContentTypes = string.Join(",", AcceptableContentTypes("video"));
+            var toReturn = new VideoAddEdit_Vm
+            {
+                ImageContentTypes = string.Join(",", AcceptableContentTypes("image")),
+                VideoContentTypes = string.Join(",", AcceptableContentTypes("video"))
+            };
 
             if (id > 0)
             {
                 // Edit part
+                var userId = await UnitOfWork.VideoRepo.GetUserIdByVideoId(id);
+
+                if (!userId.Equals(User.GetUserId()))
+                {
+                    TempData["notification"] = "false;Not Found; Requested video not found.";
+                    return RedirectToAction("Index", "Channel");
+                }
+
+                var fetchedVideo = await UnitOfWork.VideoRepo.GetByIdAsync(id);
+
+                if (fetchedVideo == null)
+                {
+                    TempData["notification"] = "false;Not Found; Requested video not found.";
+                    return RedirectToAction("Index", "Channel");
+                }
+
+                toReturn.Id = fetchedVideo.Id;
+                toReturn.Title = fetchedVideo.Title;
+                toReturn.Description = fetchedVideo.Description;
+                toReturn.CategoryId = fetchedVideo.CategoryId;
+                toReturn.ImageUrl = fetchedVideo.ThumbnailUrl;
             }
 
             toReturn.CategoryDropDown = await GetCategoryDropdownAsync();
@@ -58,12 +77,6 @@ namespace ClipShare.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEditVideo(VideoAddEdit_Vm model)
         {
-            // Handle null model case
-            //if (model == null)
-            //{
-            //    model = new VideoAddEdit_Vm();
-            //}
-
             if (ModelState.IsValid)
             {
                 bool proceed = true;
@@ -177,6 +190,7 @@ namespace ClipShare.Controllers
                         if (model.ImageUpload != null)
                         {
                             // handle re uploading the image file
+                            fetchedVideo.ThumbnailUrl = photoService.UploadPhotoLocally(model.ImageUpload, fetchedVideo.ThumbnailUrl);
                         }
 
                         title = "Editted";
@@ -217,7 +231,7 @@ namespace ClipShare.Controllers
             }
             else
             {
-                return Configuration.GetSection("FileUpload:VideoContentType").Get<string[]>();
+                return Configuration.GetSection("FileUpload:VideoContentTypes").Get<string[]>();
             }
         }
 
