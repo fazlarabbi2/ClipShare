@@ -1,6 +1,6 @@
-using ClipShare.DataAccess.Data;
 using ClipShare.Entities;
 using ClipShare.Extensions;
+using ClipShare.Seed;
 using DataAccess.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;

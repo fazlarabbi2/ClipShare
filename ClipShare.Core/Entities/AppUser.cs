@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ClipShare.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClipShare.Entities
@@ -14,5 +15,6 @@ namespace ClipShare.Entities
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Subscribe> Subscriptions { get; set; }
         public ICollection<LikeDislike> LikeDislikes { get; set; }
+        public ICollection<VideoView> Histories { get; set; }
     }
 }

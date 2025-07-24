@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ClipShare.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ClipShare.Entities
@@ -17,6 +18,7 @@ namespace ClipShare.Entities
         public byte[] Contents { get; set; }
         public int CategoryId { get; set; }
         public int ChannelId { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         //Navigations
         [ForeignKey("CategoryId")]
@@ -25,5 +27,6 @@ namespace ClipShare.Entities
         public Channel Channel { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<LikeDislike> LikeDislikes { get; set; }
+        public ICollection<VideoView> Viewers { get; set; }
     }
 }

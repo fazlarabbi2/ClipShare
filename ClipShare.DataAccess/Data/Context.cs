@@ -1,4 +1,5 @@
-﻿using ClipShare.Entities;
+﻿using ClipShare.DataAccess.Data.Config;
+using ClipShare.Entities;
 using DataAccess.Data.Config;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace DataAccess.Data
             builder.ApplyConfiguration(new CommentConfig());
             builder.ApplyConfiguration(new SubscribeConfig());
             builder.ApplyConfiguration(new LikeDislikeConfig());
+            builder.ApplyConfiguration(new VideoViewConfig());
         }
     }
 }

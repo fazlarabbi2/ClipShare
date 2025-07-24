@@ -18,6 +18,10 @@
    <ProjectReference Include="..\ClipShare.DataAccess\ClipShare.DataAccess.csproj" />
  </ItemGroup>  
 
+ <ItemGroup>
+   <Folder Include="Seed\Files\" />
+ </ItemGroup>  
+
  <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://json.schemastore.org/appsettings.json" /></VisualStudio></ProjectExtensions>  
 
 </Project>

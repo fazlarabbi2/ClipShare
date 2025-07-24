@@ -22,6 +22,42 @@ namespace ClipShare.DataAccess.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ClipShare.Core.Entities.VideoView", b =>
+                {
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VideoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Is_Proxy")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastVisit")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfVisit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AppUserId", "VideoId");
+
+                    b.HasIndex("VideoId");
+
+                    b.ToTable("VideoView");
+                });
+
             modelBuilder.Entity("ClipShare.Entities.AppRole", b =>
                 {
                     b.Property<int>("Id")
@@ -257,6 +293,9 @@ namespace ClipShare.DataAccess.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -379,6 +418,25 @@ namespace ClipShare.DataAccess.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ClipShare.Core.Entities.VideoView", b =>
+                {
+                    b.HasOne("ClipShare.Entities.AppUser", "AppUser")
+                        .WithMany("Histories")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ClipShare.Entities.Video", "Video")
+                        .WithMany("Viewers")
+                        .HasForeignKey("VideoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Video");
                 });
 
             modelBuilder.Entity("ClipShare.Entities.Channel", b =>
@@ -529,6 +587,8 @@ namespace ClipShare.DataAccess.Data.Migrations
 
                     b.Navigation("Comments");
 
+                    b.Navigation("Histories");
+
                     b.Navigation("LikeDislikes");
 
                     b.Navigation("Subscriptions");
@@ -556,6 +616,8 @@ namespace ClipShare.DataAccess.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("LikeDislikes");
+
+                    b.Navigation("Viewers");
                 });
 #pragma warning restore 612, 618
         }
