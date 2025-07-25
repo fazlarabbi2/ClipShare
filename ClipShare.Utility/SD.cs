@@ -22,14 +22,22 @@ namespace ClipShare.Utility
             return returnActive ? cssClass : string.Empty;
         }
 
-        public static string GetRandomName()
+        //public static string GetRandomName()
+        //{
+        //    var randomNumber = new byte[10];
+
+        //    using var rng = RandomNumberGenerator.Create();
+        //    rng.GetBytes(randomNumber);
+
+        //    return Convert.ToBase64String(randomNumber);
+        //}
+
+        public static DateTime GetRandomDate(DateTime minDate, DateTime maxDate, int seed)
         {
-            var randomNumber = new byte[10];
+            Random random = new(seed);
 
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-
-            return Convert.ToBase64String(randomNumber);
+            int range = (maxDate - minDate).Days;
+            return minDate.AddDays(random.Next(range + 1));
         }
     }
 }

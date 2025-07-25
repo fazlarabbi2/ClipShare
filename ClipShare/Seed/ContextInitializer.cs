@@ -1,8 +1,11 @@
 ﻿using ClipShare.Entities;
+using ClipShare.Services.IServices;
 using ClipShare.Utility;
 using DataAccess.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +14,7 @@ namespace ClipShare.Seed
 {
     public static class ContextInitializer
     {
-        public static async Task InitializerAsync(Context context, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        public static async Task InitializerAsync(Context context, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IPhotoService photoService)
         {
             if (context.Database.GetPendingMigrations().Count() > 0)
             {
@@ -101,6 +104,8 @@ namespace ClipShare.Seed
                 context.Category.Add(news);
                 context.Category.Add(sport);
 
+                await context.SaveChangesAsync();
+                
                 // adding videos and images into our Video Table
                 var imageDirectory = new DirectoryInfo("Seed/Files/Thumbnails");
                 var videoDirectory = new DirectoryInfo("Seed/Files/Videos");
@@ -116,8 +121,58 @@ namespace ClipShare.Seed
                     var categoryName = allNames[0];
                     var titles = allNames[2].Split(".")[0];
                     var categoryId = await context.Category.Where(x => x.Name.ToLower() == categoryName).Select(x => x.Id).FirstOrDefaultAsync();
+
+
+                    IFormFile imageFile = ConvertToFile(imageFiles[i]);
+                    IFormFile videoFile = ConvertToFile(videoFiles[i]);
+
+                    var videoToAdd = new Video
+                    {
+                        Title = titles,
+                        Description = description,
+                        CategoryId = categoryId,
+                        ContentType = videoFiles[i].Extension,
+                        Contents = GetContentsAsync(videoFile).GetAwaiter().GetResult(),
+                        ThumbnailUrl = photoService.UploadPhotoLocally(imageFile),
+                        ChannelId = (i % 2 == 0) ? johnChannel.Id : peterChannel.Id,
+                        CreatedAt = SD.GetRandomDate(new DateTime(2015, 1, 1), DateTime.Now, i),
+                    };
+
+                    context.Video.Add(videoToAdd);
                 }
+
+                await context.SaveChangesAsync();
             }
         }
+        #region Private Helper Methods
+        private static IFormFile ConvertToFile(FileInfo fileInfo)
+        {
+            // Open the file stream correctly using the file path and FileMode
+            var stream = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
+
+            // Create the IFormFile instance using the file stream
+            IFormFile formFile = new FormFile(
+                stream,
+                0,
+                fileInfo.Length,
+                fileInfo.Name,
+                fileInfo.Name
+            );
+
+            return formFile;
+        }
+
+        private static async Task<byte[]> GetContentsAsync(IFormFile file)
+        {
+            byte[] contents;
+            using var memoryStream = new MemoryStream();
+
+            await file.CopyToAsync(memoryStream);
+
+            contents = memoryStream.ToArray();
+            return contents;
+        }
+
+        #endregion
     }
 }
