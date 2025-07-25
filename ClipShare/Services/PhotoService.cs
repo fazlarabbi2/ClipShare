@@ -1,5 +1,4 @@
 ﻿using ClipShare.Services.IServices;
-using ClipShare.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;

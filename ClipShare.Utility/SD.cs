@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Security.Cryptography;
 
 namespace ClipShare.Utility
 {
@@ -31,6 +30,13 @@ namespace ClipShare.Utility
 
         //    return Convert.ToBase64String(randomNumber);
         //}
+
+        public static int GetRandomNumber(int minValue, int maxValue, int seed)
+        {
+            Random random = new(seed);
+
+            return random.Next(minValue, maxValue);
+        }
 
         public static DateTime GetRandomDate(DateTime minDate, DateTime maxDate, int seed)
         {

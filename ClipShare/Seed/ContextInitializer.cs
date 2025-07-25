@@ -105,7 +105,7 @@ namespace ClipShare.Seed
                 context.Category.Add(sport);
 
                 await context.SaveChangesAsync();
-                
+
                 // adding videos and images into our Video Table
                 var imageDirectory = new DirectoryInfo("Seed/Files/Thumbnails");
                 var videoDirectory = new DirectoryInfo("Seed/Files/Videos");
