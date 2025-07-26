@@ -5,6 +5,7 @@ using ClipShare.Entities;
 using ClipShare.Utility;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ClipShare.DataAccess.Repo
 {
@@ -39,16 +40,24 @@ namespace ClipShare.DataAccess.Repo
 
             query = parameters.SortBy switch
             {
-                "title-a"=>query.OrderBy(x=>x.Title),
-                "title-d" => query.OrderByDescending(x=>x.Title),
-                 "date-a" => query.OrderBy(u=>u.CreatedAt),
-                 "date-d" => query.OrderByDescending(u=>u.CreatedAt),
-                 "views-a" => query.OrderBy(u=>u.Views.ToString()),
-                 "views-d" => query.OrderByDescending(u=>u.Views.ToString()),
-                 "comments-a" => query.OrderBy(u=>u.Comments),
-                 "comments-d" => query.OrderByDescending(u=>u.Comments),
-                 "lieks-a" => query.OrderBy(u=>u.Likes),
-            }
+                "title-a" => query.OrderBy(x => x.Title),
+                "title-d" => query.OrderByDescending(x => x.Title),
+                "date-a" => query.OrderBy(u => u.CreatedAt),
+                "date-d" => query.OrderByDescending(u => u.CreatedAt),
+                //"views-a" => query.OrderBy(u => u.Views.ToString()),
+                //"views-d" => query.OrderByDescending(u => u.Views.ToString()),
+                //"comments-a" => query.OrderBy(u => u.Comments),
+                //"comments-d" => query.OrderByDescending(u => u.Comments),
+                //"lieks-a" => query.OrderBy(u => u.Likes),
+                //"likes-d" => query.OrderByDescending(u => u.Likes),
+                //"dislikes-a" => query.OrderBy(u => u.Dislikes),
+                //"dislikes-d" => query.OrderByDescending(u => u.Dislikes),
+                "category-a" => query.OrderBy(u => u.CategoryName),
+                "category-d" => query.OrderByDescending(u => u.CategoryName),
+                _ => query.OrderByDescending(u => u.CreatedAt)
+            };
+
+            return await PaginatedList<VideoGridChannelDto>.CreateAsync(query.AsNoTracking(), parameters.PageNumber, parameters.PageSize);
         }
     }
 }

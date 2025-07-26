@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClipShare.Core.Pagination
 {
+    // This is the class that we send back to the browser
     public class PaginatedResult<T>(IReadOnlyList<T> items, int totalItemsCount, int pageNumber, int pageSize, int totalPages) where T : class
     {
         public IReadOnlyList<T> Items { get; set; } = items;
