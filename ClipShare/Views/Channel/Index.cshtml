@@ -173,128 +173,234 @@ else
     </div>
 }
 
- @* // <td>${(pageNumber - 1) * pageSize + index + 1}</td> *@
+@* // <td>${(pageNumber - 1) * pageSize + index + 1}</td> *@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        let pageNumber = 1;
-        let pageSize = 5;
-        let sortBy = '';
+                let pageNumber = 1;
+                let pageSize = 5;
+                let sortBy = '';
 
-        $(function(){
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e){
-                var currentTabId = $(e.target).attr('href');
-                localStorage.setItem('activeTab', currentTabId);
-            });
+                $(function(){
+                    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e){
+                        var currentTabId = $(e.target).attr('href');
+                        localStorage.setItem('activeTab', currentTabId);
+                    });
 
-            var activeTab = localStorage.getItem('activeTab');
+                    var activeTab = localStorage.getItem('activeTab');
 
-            if(activeTab){
-                $('a[href="' + activeTab + '"]').tab('show');
-            }
-            else{
-                $('a[href="#myvideos"]').tab('show');
-            }
-        });
+                    if(activeTab){
+                        $('a[href="' + activeTab + '"]').tab('show');
+                    }
+                    else{
+                        $('a[href="#myvideos"]').tab('show');
+                    }
+                });
 
-        function getMyVideos(){
-            const parameters = {
-                pageNumber,
-                pageSize,
-                sortBy
-            }
+                function getMyVideos(){
+                    const parameters = {
+                        pageNumber,
+                        pageSize,
+                        sortBy
+                    }
 
-            $.ajax({
-                url: "/Video/GetVideosForChannelGrid",
-                type: "GET",
-                data: parameters,
-                success: function(data){
-                    const result = data.result;
+                    $.ajax({
+                        url: "/Video/GetVideosForChannelGrid",
+                        type: "GET",
+                        data: parameters,
+                        success: function(data){
+                            const result = data.result;
 
-                    $('#videosTableBody').empty();
-                    $('#paginationSummary').empty();
-                    $('#paginationBtnGroup').empty();
-                    $('#itemsPerPageDisplay').empty();
+                            $('#videosTableBody').empty();
+                            $('#paginationSummary').empty();
+                            $('#paginationBtnGroup').empty();
+                            $('#itemsPerPageDisplay').empty();
 
-                    populateVideoTableBody(result.items);
+                            populateVideoTableBody(result.items);
+
+                            if(result.totalItemsCount > 0){
+                                $('#itemsPerPageDisplay').text(pageSize);
+
+                                const from = (result.pageNumber - 1) * result.pageSize + 1;
+                                const to = result.pageNumber * result.pageSize > result.totalItemsCount ? result.totalItemsCount : result.pageNumber * result.pageSize;
+
+                                $('#paginationSummary').text(`${from}-${to} of ${result.totalItemsCount}`);
+
+                                // First Page Button
+                                let firstPageBtn = `
+                                    <button type="button" class="btn btn-secondary btn-sm paginationBtn" ${result.pageNumber==1?"disabled":''}
+                                        data-value="1" data-bs-toggle="tooltip" data-bs-placement="top" title="First Page">
+                                        <i class="bi bi-chevron-bar-left"></i>
+                                    </button>
+                                `;
+                                $('#paginationBtnGroup').append(firstPageBtn);
+
+                                // Previous Page Button
+                                let previousPageBtn = `
+                                    <button class="btn btn-sm btn-secondary paginationBtn" ${result.pageNumber == 1 ? "disabled" : ''}
+                                        data-value="${result.pageNumber - 1}" data-bs-toggle="tooltip" data-bs-placement="top" title="Previous Page">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                `;
+                                $('#paginationBtnGroup').append(previousPageBtn);
+
+                                // Next Page Button
+                                let nextPageBtn = `
+                                    <button class="btn btn-sm btn-secondary paginationBtn" ${result.pageNumber == result.totalPages ? "disabled" : ''}
+                                        data-value="${result.pageNumber + 1}" data-bs-toggle="tooltip" data-bs-placement="top" title="Next Page">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                `;
+                                $('#paginationBtnGroup').append(nextPageBtn);
+
+                                // Last Page Button
+                                let lastPageBtn = `
+                                    <button type="button" class="btn btn-sm btn-secondary paginationBtn" ${result.pageNumber == result.totalPages ? 'disabled' : ''}
+                                        data-value="${result.totalPages}" data-bs-toggle="tooltip" data-bs-placement="top" title="Last Page">
+                                        <i class="bi bi-chevron-bar-right"></i>
+                                    </button>
+                                `;
+                                $('#paginationBtnGroup').append(lastPageBtn);
+
+                                // On paginationBtn click event
+                                $('.paginationBtn').click(function(){
+                                    pageNumber = $(this).data('value');
+                                    getMyVideos();
+                                });
+                            }
+                            else{
+                                $('#itemsPerPageDropdown').hide();
+                            }
+                        }
+                    });
                 }
-            })
-        }
 
-        function populateVideoTableBody(videos){
-            let trTag = '';
+                // On dropdown "Rows per page" selection event
+                $('.pageSizeBtn').click(function(){
+                    pageSize = $(this).data('value');
+                    getMyVideos();
+                });
+
+                // On each table header click event
+                $('.sortBy').click(function(){
+                    const sortByValue = $(this).data('value');
+
+                    $sortBySpan = $('#' + sortByValue + 'SortBy');
+                    const $i = $sortBySpan.find('i');
+
+                    if($i.hasClass('bi-arrow-up-short')){
+                        $sortBySpan.empty();
+                        $sortBySpan.append(`<i class="bi bi-arrow-down-short"></i>`);
+                        sortBy = sortByValue + '-d';
+                    }
+                    else if($i.hasClass('bi-arrow-down-short')){
+                        $sortBySpan.empty();
+                        $sortBySpan.append(`<i class="bi bi-arrow-up-short"></i>`);
+                        sortBy = sortByValue+'-a';
+                    }
+                    else{
+                        $sortBySpan.empty();
+                        $sortBySpan.append(`<i class="bi bi-arrow-up-short"></i>`);
+                        sortBy = sortByValue + '-a';
+                    }
+
+                    // remove all other arrows
+                    // removeAllOtherArrows(sortByValue);
+                    getMyVideos();
+                });
+
+                function populateVideoTableBody(videos){
+                    let trTag = '';
+                    // debugger;
+                    if(videos.length > 0){
+
+                        videos.map((v, index)=>{
+                            trTag +=
+                            `<tr>
+                                <td>${index + 1}</td>
+                                <td><img src="${v.thumbnailUrl}" class="card-img-top rounded preview-image" /></td>
+                                <td><p>${v.title}</p></td>
+                                <td>${new Date(v.createdAt).toLocaleDateString('en-US', {year:'numeric', month: 'long', day: 'numeric'})}</td>
+                                <td>
+                                    <p>${v.views.toLocaleString()}</p>
+                                </td>
+                                <td>${v.comments.toLocaleString()}</td>
+                                <td>${v.likes.toLocaleString()}</td>
+                                <td>${v.dislikes.toLocaleString()}</td>
+                                <td>${v.categoryName}</td>
+                                <td>
+                                    <a href="/Video/CreateEditVideo/${v.id}" class="btn btn-warning text-white me-2"><i class="bi bi-pencil"></i></a>
+                                    <button class="btn btn-danger text-white me-2"
+                                        onclick="deleteVideo(${v.id}, '${v.title}')"><i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                        })
+                    }
+                    else{
+                        trTag = '<tr><td colspan="10" class="text-center">You don\'t have any any videos</td></tr>';
+                    }
+
+                    $('#videosTableBody').append(trTag);
+                }
+
+                $(function(){
+                    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e){
+                        var currentTabId = $(e.target).attr('href');
+                        localStorage.setItem('activeTab', currentTabId);
+                    });
+
+                    var activeTab = localStorage.getItem('activeTab');
+
+                    if(activeTab){
+                        $('a[href="' + activeTab + '"]').tab('show');
+                    }
+                    else{
+                        $('a[href="#myvideos"]').tab('show');
+                    }
+
+                    getMyVideos();
+                });
+
+                function editProfile(){
+                    $('#updateProfileButtons').show();
+                    $('#profile_name').prop("disabled", false);
+                    $('#profile_about').prop("disabled", false);
+                    $('#divEditButton').hide();
+                }
+
+                function cancelEdit(){
+                    $('#divEditButton').show();
+                    $('#updateProfileButtons').hide();
+                    $('#profile_name').val('@Model.Name');
+                    $('#profile_about').val('@Model.About');
+
+                    $('#profile_name').prop("disabled", true);
+                    $('#profile_about').prop("disabled", true);
+
+                    // Clear validation errors
+                    $('#profile_name-error').empty();
+                    $('#profile_about-error').empty();
+                    $('#profile_name').removeClass('input-validation-error');
+                    $('#profile_about').removeClass('input-validation-error');
+                }
+
+        async function deleteVideo(id, name)
+        {
             // debugger;
-            if(videos.length > 0){
-                videos.map((v, index)=>{
-                    trTag += 
-                    `<tr>
-                        <td>${index + 1}</td>
-                        <td><img src="${v.thumbnailUrl}" class="card-img-top rounded preview-image" /></td>
-                        <td><p>${v.title}</p></td>
-                        <td>${new Date(v.createdAt).toLocaleDateString('en-US', {year:'numeric', month: 'long', day: 'numeric'})}</td>
-                        <td>
-                            <p>${v.views.toLocaleString()}</p>
-                        </td>
-                        <td>${v.comments.toLocaleString()}</td>
-                        <td>${v.likes.toLocaleString()}</td>
-                        <td>${v.dislikes.toLocaleString()}</td>
-                        <td>${v.categoryName}</td>
-                        <td>
-                            <a href="/Video/CreateEditVideo/${v.id}" class="btn btn-warning text-white me-2"><i class="bi bi-pencil"></i></a>
-                            <button class="btn btn-danger text-white me-2" 
-                                onclick="deleteVideo(${v.id}, '${v.title}')"><i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>`;
-                })
+            const result = await confirmation('Are you sure you want to remove ' + name + '?');
+            if(result){
+                $.ajax({
+                    url: "/Video/DeleteVideo/" + id, 
+                    type: "DELETE",
+                    success: function(data){
+                        displayNotification(data.isSuccess, data.title, data.message, 'modal');
+                        getMyVideos();
+                    }
+                });
             }
-            else{
-                trTag = '<tr><td colspan="10" class="text-center">You don\'t have any any videos</td></tr>';
-            }
-
-            $('#videosTableBody').append(trTag);
         }
 
-        $(function(){
-            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e){
-                var currentTabId = $(e.target).attr('href');
-                localStorage.setItem('activeTab', currentTabId);
-            });
-
-            var activeTab = localStorage.getItem('activeTab');
-
-            if(activeTab){
-                $('a[href="' + activeTab + '"]').tab('show');
-            }
-            else{
-                $('a[href="#myVideos"]').tab('show');
-            }
-
-            getMyVideos();
-        });
-
-        function editProfile(){
-            $('#updateProfileButtons').show();
-            $('#profile_name').prop("disabled", false);
-            $('#profile_about').prop("disabled", false);
-            $('#divEditButton').hide();
-        }
-
-        function cancelEdit(){
-            $('#divEditButton').show();
-            $('#updateProfileButtons').hide();
-            $('#profile_name').val('@Model.Name');
-            $('#profile_about').val('@Model.About');
-
-            $('#profile_name').prop("disabled", true);
-            $('#profile_about').prop("disabled", true);
-
-            // Clear validation errors
-            $('#profile_name-error').empty();
-            $('#profile_about-error').empty();
-            $('#profile_name').removeClass('input-validation-error');
-            $('#profile_about').removeClass('input-validation-error');
-        }
     </script>
 }

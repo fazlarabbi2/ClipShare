@@ -224,6 +224,22 @@ namespace ClipShare.Controllers
 
             return Json(new ApiResponse(200, result: paginatedResults));
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteVideo(int id)
+        {
+            var video = await UnitOfWork.VideoRepo.GetFirstOrDefaultAsync(x => x.Id == id && x.Channel.AppUserId == User.GetUserId());
+
+            if(video != null)
+            {
+                UnitOfWork.VideoRepo.Remove(video);
+                await UnitOfWork.CompleteAsync();
+
+                return Json(new ApiResponse(200, "Deleted", "Your Video of " + video.Title + " has been deleted"));
+            }
+
+            return Json(new ApiResponse(404, message: "The requested video was not Found"));
+        }
         #endregion
 
         #region Private Methods

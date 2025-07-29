@@ -41,10 +41,7 @@ namespace ClipShare.Controllers
 
             var user = await userManager.FindByNameAsync(model.UserName);
 
-            if (user == null)
-            {
-                user = await userManager.FindByEmailAsync(model.UserName);
-            }
+            user ??= await userManager.FindByEmailAsync(model.UserName);
 
             if (user == null)
             {
@@ -66,7 +63,6 @@ namespace ClipShare.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-
             return View();
         }
 

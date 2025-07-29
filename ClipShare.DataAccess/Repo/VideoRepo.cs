@@ -27,7 +27,7 @@ namespace ClipShare.DataAccess.Repo
                 .Select(x => new VideoGridChannelDto
                 {
                     Id = x.Id,
-                    ThumbnailURL = x.ThumbnailUrl,
+                    ThumbnailUrl = x.ThumbnailUrl,
                     Title = x.Title,
                     CreatedAt = x.CreatedAt,
                     CategoryName = x.Category.Name,

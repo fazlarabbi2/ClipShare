@@ -9,7 +9,7 @@ namespace ClipShare.Core.DTOs
     public class VideoGridChannelDto
     {
         public int Id { get; set; }
-        public string ThumbnailURL { get; set; }
+        public string ThumbnailUrl { get; set; }
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
         public int Views { get; set; }
