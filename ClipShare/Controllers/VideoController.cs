@@ -219,7 +219,7 @@ namespace ClipShare.Controllers
         public async Task<IActionResult> GetVideosForChannelGrid(BaseParameters parameters)
         {
             var userForChannelId = await UnitOfWork.ChannelRepo.GetChannelIdByUserId(User.GetUserId());
-            var videosForGrid = await UnitOfWork.VideoRepo.GetVideosForChannelGrid(userForChannelId, parameters);
+            var videosForGrid = await UnitOfWork.VideoRepo.GetVideosForChannelGridAsync(userForChannelId, parameters);
             var paginatedResults = new PaginatedResult<VideoGridChannelDto>(videosForGrid, videosForGrid.TotalItemsCount, videosForGrid.PageNumber, videosForGrid.PageSize, videosForGrid.TotalPages);
 
             return Json(new ApiResponse(200, result: paginatedResults));

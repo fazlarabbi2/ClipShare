@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ClipShare.ViewModels.Home.Home_vm
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -15,32 +16,34 @@ else
         <nav class="p-2 text-bg-dark rounded d-none d-lg-block" style="width: 250px; min-height: 700px;">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="~/Home/Index" class="nav-link text-white">
+                    <a asp-action="Index" asp-route-page="Home" class="nav-link text-white @Html.IsActivePage("Home")">
                         <i class="bi bi-house-door me-2"></i>
                         <span class="nav-text">Home</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="~/Subscriptions/Index" class="nav-link text-white">
+                    <a asp-action="Index" asp-route-page="Subscriptions" class="nav-link text-white @Html.IsActivePage("Subscriptions")">
                         <i class="bi bi-youtube me-2"></i>
                         <span class="nav-text">Subscriptions</span>
                     </a>
                 </li>
-                <hr/>
+            </ul>
+            <hr class="text-white my-2" />
+            <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
+                    <a asp-action="Index" asp-route-page="History" class="nav-link text-white @Html.IsActivePage("History")">
                         <i class="bi bi-clock-history me-2"></i>
                         <span class="nav-text">History</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
+                    <a asp-action="Index" asp-route-page="Likes" class="nav-link text-white @Html.IsActivePage("Likes")">
                         <i class="bi bi-hand-thumbs-up me-2"></i>
                         <span class="nav-text">Likes</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-white">
+                    <a asp-action="Index" asp-route-page="Dislikes" class="nav-link text-white @Html.IsActivePage("Dislikes")">
                         <i class="bi bi-hand-thumbs-down me-2"></i>
                         <span class="nav-text">Dislikes</span>
                     </a>
@@ -51,26 +54,37 @@ else
         <!-- Navbar for smaller screen-->
         <div class="d-lg-none mb-2">
             <div class="p-2 text-bg-dark rounded d-flex justify-content-between" style="width: 100%">
-                <a href="~/Home/Index" class="btn btn-dark">
+                <a asp-action="Index" asp-route-page="Home" class="btn btn-dark @Html.IsActivePage("Home")">
                     <i class="bi bi-house-door me-2"></i>
                 </a>
-                <a href="~/Subscriptions/Index" class="btn btn-dark">
+                <a asp-action="Index" asp-route-page="Subscriptions" class="btn btn-dark @Html.IsActivePage("Subscriptions")">
                     <i class="bi bi-youtube me-2"></i>
                     <span class="nav-text">Subscriptions</span>
                 </a>
-                <a href="#" class="btn btn-dark">
+                <a asp-action="Index" asp-route-page="History" class="btn btn-dark @Html.IsActivePage("History")">
                     <i class="bi bi-clock-history me-2"></i>
                     <span class="nav-text">History</span>
                 </a>
-                <a href="#" class="btn btn-dark">
+                <a asp-action="Index" asp-route-page="Likes" class="btn btn-dark @Html.IsActivePage("Likes")">
                     <i class="bi bi-hand-thumbs-up me-2"></i>
                     <span class="nav-text">Likes</span>
                 </a>
-                <a href="#" class="btn btn-dark">
+                <a asp-action="Index" asp-route-page="Dislikes" class="btn btn-dark @Html.IsActivePage("Dislikes")">
                     <i class="bi bi-hand-thumbs-down me-2"></i>
                     <span class="nav-text">Dislikes</span>
                 </a>
             </div>
+        </div>
+
+        <div class="px-2 py-2 rounded bg-light" style=" width:100%;">
+            @if (Model.Page == null || Model.Page == "Home")
+            {
+                <partial name="_HomePartial" model="Model"/>
+            }
+            else
+            {
+                <h5 class="mb-0 text-dark">@Model.Page</h5>
+            }
         </div>
     </div>
 }
