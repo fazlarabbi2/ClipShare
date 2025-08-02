@@ -56,5 +56,42 @@ namespace ClipShare.Utility
             int range = (maxDate - minDate).Days;
             return minDate.AddDays(random.Next(range + 1));
         }
+
+        public static string GetContentType(string fileExtension)
+        {
+            return fileExtension switch
+            {
+                "video/mp4" => ".mp4",
+                "video/quicktime" => ".mov",
+                "video/x-msvideo" => ".avi",
+                "video/x-ms-wmv" => ".wmv",
+                "video/x-flv" => ".flv",
+                "video/x-matroska" => ".mkv",
+                "video/webm" => ".webm",
+                "video/ogg" => ".ogv",
+                "video/3gpp" => ".3gp",
+                "video/3gpp2" => ".3g2",
+                _ => ".mp4"
+            };
+        }
+
+
+        public static string GetFileExtension(string contentType)
+        {
+            return contentType switch
+            {
+                "video/mp4" => ".mp4",
+                "video/quicktime" => ".mov",
+                "video/x-msvideo" => ".avi",
+                "video/x-ms-wmv" => ".wmv",
+                "video/x-flv" => ".flv",
+                "video/x-matroska" => ".mkv",
+                "video/webm" => ".webm",
+                "video/ogg" => ".ogv",
+                "video/3gpp" => ".3gp",
+                "video/3gpp2" => ".3g2",
+                _ => ".mp4"
+            };
+        }
     }
 }

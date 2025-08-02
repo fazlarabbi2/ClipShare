@@ -1,4 +1,5 @@
-﻿using ClipShare.Entities;
+﻿using ClipShare.Core.Entities;
+using ClipShare.Entities;
 using ClipShare.Services.IServices;
 using ClipShare.Utility;
 using DataAccess.Data;
@@ -131,6 +132,12 @@ namespace ClipShare.Seed
                         Title = titles,
                         Description = description,
                         CategoryId = categoryId,
+                        VideoFile = new VideoFile
+                        {
+                            ContentType = SD.GetContentType(videoFiles[i].Extension),
+                            Contents = GetContentsAsync(videoFile).GetAwaiter().GetResult(),
+                            Extension = videoFiles[i].Extension
+                        },
                         ContentType = videoFiles[i].Extension,
                         Contents = GetContentsAsync(videoFile).GetAwaiter().GetResult(),
                         ThumbnailUrl = photoService.UploadPhotoLocally(imageFile),

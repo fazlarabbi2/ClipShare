@@ -28,7 +28,7 @@ namespace ClipShare.Controllers
             {
                 toReturn.Page = page;
 
-                if(page == null || page == "Home")
+                if (page == null || page == "Home")
                 {
                     var allCategories = await UnitOfWork.CategoryRepo.GetAllAsync();
 

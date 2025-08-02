@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClipShare.Core.Pagination
+﻿namespace ClipShare.Core.Pagination
 {
     public class HomeParameters : BaseParameters
     {

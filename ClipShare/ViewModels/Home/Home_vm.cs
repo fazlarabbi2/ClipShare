@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace ClipShare.ViewModels.Home

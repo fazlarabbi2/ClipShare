@@ -1,4 +1,5 @@
 ﻿using ClipShare.Core.DTOs;
+using ClipShare.Core.Entities;
 using ClipShare.Core.Pagination;
 using ClipShare.Entities;
 using ClipShare.Extensions;
@@ -167,6 +168,12 @@ namespace ClipShare.Controllers
                         {
                             Title = model.Title,
                             Description = model.Description,
+                            VideoFile = new VideoFile
+                            {
+                                ContentType = model.VideoUpload.ContentType,
+                                Contents = GetContentsAsync(model.VideoUpload).GetAwaiter().GetResult(),
+                                Extension = SD.GetFileExtension(model.VideoUpload.ContentType)
+                            },
                             ContentType = model.VideoUpload.ContentType,
                             Contents = GetContentsAsync(model.VideoUpload).GetAwaiter().GetResult(),
                             CategoryId = model.CategoryId,
@@ -235,7 +242,7 @@ namespace ClipShare.Controllers
         {
             var video = await UnitOfWork.VideoRepo.GetFirstOrDefaultAsync(x => x.Id == id && x.Channel.AppUserId == User.GetUserId());
 
-            if(video != null)
+            if (video != null)
             {
                 UnitOfWork.VideoRepo.Remove(video);
                 await UnitOfWork.CompleteAsync();

@@ -5,7 +5,6 @@ using ClipShare.Entities;
 using ClipShare.Utility;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ClipShare.DataAccess.Repo
 {
