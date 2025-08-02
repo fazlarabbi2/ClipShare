@@ -27,7 +27,7 @@ namespace ClipShare.Utility
             var isPageMatch = currentPage == page;
 
             // Default Home Page
-            if (string.IsNullOrEmpty(currentPage) && currentPage == "Home") return "active";
+            if (string.IsNullOrEmpty(currentPage) && page == "Home") return "active";
 
             return isPageMatch ? "active" : string.Empty;
         }

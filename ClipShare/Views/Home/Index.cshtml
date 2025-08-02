@@ -79,7 +79,7 @@ else
         <div class="px-2 py-2 rounded bg-light" style=" width:100%;">
             @if (Model.Page == null || Model.Page == "Home")
             {
-                <partial name="_HomePartial" model="Model"/>
+                <partial name="_HomePartial" model="Model" />
             }
             else
             {
@@ -87,4 +87,22 @@ else
             }
         </div>
     </div>
+}
+
+@section Scripts {
+    <script src="~/js/home_home.js"></script>
+
+    <script>
+        $(function(){
+            const activeLink = $('.nav-link.active');
+            const linkName = activeLink.find('.nav-text').text();
+
+            if(linkName=="Home"){
+                getMyVideos();
+            }
+            else{
+                console.log('else');
+            }
+        })
+    </script>
 }

@@ -30,6 +30,11 @@ namespace ClipShare.Controllers
             this.photoService = photoService;
         }
 
+        public IActionResult Watch(int id)
+        {
+            return View();
+        }
+
         public async Task<IActionResult> CreateEditVideo(int id)
         {
             if (!await UnitOfWork.ChannelRepo.AnyAsync(x => x.AppUserId == User.GetUserId()))
