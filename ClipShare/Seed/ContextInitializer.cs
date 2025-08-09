@@ -6,6 +6,7 @@ using DataAccess.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.IO;
 using System.Linq;
@@ -132,14 +133,14 @@ namespace ClipShare.Seed
                         Title = titles,
                         Description = description,
                         CategoryId = categoryId,
+                        ContentType = SD.GetContentType(videoFiles[i].Extension),
+                        Contents = GetContentsAsync(videoFile).GetAwaiter().GetResult(),
                         VideoFile = new VideoFile
                         {
                             ContentType = SD.GetContentType(videoFiles[i].Extension),
                             Contents = GetContentsAsync(videoFile).GetAwaiter().GetResult(),
                             Extension = videoFiles[i].Extension
                         },
-                        ContentType = videoFiles[i].Extension,
-                        Contents = GetContentsAsync(videoFile).GetAwaiter().GetResult(),
                         ThumbnailUrl = photoService.UploadPhotoLocally(imageFile),
                         ChannelId = (i % 2 == 0) ? johnChannel.Id : peterChannel.Id,
                         CreatedAt = SD.GetRandomDate(new DateTime(2015, 1, 1), DateTime.Now, i),

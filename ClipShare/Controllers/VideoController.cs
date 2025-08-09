@@ -31,9 +31,58 @@ namespace ClipShare.Controllers
             this.photoService = photoService;
         }
 
-        public IActionResult Watch(int id)
+        public async Task<IActionResult> Watch(int id)
         {
-            return View();
+            var fetchedVideo = await UnitOfWork.VideoRepo.GetFirstOrDefaultAsync(x => x.Id == id);
+
+            if (fetchedVideo != null)
+            {
+                var toReturn = new VideoWatch_vm();
+
+                toReturn.Id = fetchedVideo.Id;
+                toReturn.Title = fetchedVideo.Title;
+                toReturn.Description = fetchedVideo.Description;
+                toReturn.CreatedAt = fetchedVideo.CreatedAt;
+                toReturn.ChannelId = fetchedVideo.ChannelId;
+
+                //toReturn.IsLiked = true;
+                //toReturn.IsDisliked = true;
+
+                toReturn.SubscribersCount = SD.GetRandomNumber(1, 4000, id);
+                toReturn.ViewersCount = SD.GetRandomNumber(1000, 5000, id);
+                toReturn.LikesCount = SD.GetRandomNumber(5, 1000, id);
+                toReturn.DisLikesCount = SD.GetRandomNumber(1, 500, id);
+
+                return View(toReturn);
+            }
+            TempData["notification"] = "false; Not Found; Requested video was not found";
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> GetVideoFile(int videoId)
+        {
+            var fetchedVideoFile = await UnitOfWork.VideoFileRepo.GetFirstOrDefaultAsync(x => x.VideoId == videoId);
+
+            if (fetchedVideoFile != null)
+            {
+                return File(fetchedVideoFile.Contents, fetchedVideoFile.ContentType);
+            }
+
+            TempData["notification"] = "false; Not Found; Requested video was not found";
+            return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> DownloadVideoFile(int videoId)
+        {
+            var fetchedVideo = await UnitOfWork.VideoRepo.GetFirstOrDefaultAsync(x => x.Id == videoId, "VideoFile");
+
+            if (fetchedVideo != null)
+            {
+                string fileDownloadName = fetchedVideo.Title + fetchedVideo.VideoFile.Extension;
+                return File(fetchedVideo.Contents, fetchedVideo.VideoFile.ContentType, fileDownloadName);
+            }
+
+            TempData["notification"] = "false; Not Found; Requested video was not found";
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> CreateEditVideo(int id)
@@ -168,14 +217,14 @@ namespace ClipShare.Controllers
                         {
                             Title = model.Title,
                             Description = model.Description,
+                            ContentType = model.VideoUpload.ContentType, 
+                            Contents = GetContentsAsync(model.VideoUpload).GetAwaiter().GetResult(), 
                             VideoFile = new VideoFile
                             {
                                 ContentType = model.VideoUpload.ContentType,
                                 Contents = GetContentsAsync(model.VideoUpload).GetAwaiter().GetResult(),
                                 Extension = SD.GetFileExtension(model.VideoUpload.ContentType)
                             },
-                            ContentType = model.VideoUpload.ContentType,
-                            Contents = GetContentsAsync(model.VideoUpload).GetAwaiter().GetResult(),
                             CategoryId = model.CategoryId,
                             ChannelId = UnitOfWork.ChannelRepo.GetChannelIdByUserId(User.GetUserId()).GetAwaiter().GetResult(),
                             ThumbnailUrl = photoService.UploadPhotoLocally(model.ImageUpload), // some url that we going to provide
@@ -251,6 +300,37 @@ namespace ClipShare.Controllers
             }
 
             return Json(new ApiResponse(404, message: "The requested video was not Found"));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> SubscribeChannel(int channelId)
+        {
+            var channel = await UnitOfWork.ChannelRepo.GetFirstOrDefaultAsync(x => x.Id == channelId, "Subscribers");
+
+            if (channel != null)
+            {
+                int userId = User.GetUserId();
+
+                var fetchedSubscribe = channel.Subscribers.Where(x => x.ChannelId == channelId && x.AppUserId == userId).FirstOrDefault();
+
+                if (fetchedSubscribe == null)
+                {
+                    // Subscribe
+                    channel.Subscribers.Add(new Subscribe(userId, channelId));
+
+                    await UnitOfWork.CompleteAsync();
+                    return Json(new ApiResponse(200, "Subscribed", "Subscribed"));
+                }
+                else
+                {
+                    // Unsubscribe
+                    channel.Subscribers.Remove(fetchedSubscribe);
+                    await UnitOfWork.CompleteAsync();
+                    return Json(new ApiResponse(200, "UnSubscribed", "Subscribed"));
+                }
+            }
+
+            return Json(new ApiResponse(404, message: "Channel was not found"));
         }
         #endregion
 

@@ -1,1 +1,96 @@
-﻿<p>Watch Works</p>
+﻿@model ClipShare.ViewModels.Video.VideoWatch_vm
+
+<style>
+    video {
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        outline: none;
+    }
+
+    video:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .9);
+    }
+
+    .font-btn {
+        font-size: 1.2rem;
+    }
+</style>
+
+<a asp-action="Index" asp-controller="Home" class="btn btn-primary btn-lg">Back</a>
+<div class="row mt-3">
+    <div class="col-lg-9">
+        <video controls>
+            <source src="/Video/GetVideoFile?videoId=@Model.Id" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="d-flex justify-content-between mt-2">
+            <section>
+                <span class="badge bg-warning font-btn" id="increase-views-btn">
+                    <i class="bi bi-eye"></i>
+                    <span class="ms-2" id="view-count">
+                        @Model.ViewersCount.ToString("N0")
+                    </span>
+                </span>
+            </section>
+            <section class="d-flex align-items-center">
+                <button class="btn btn@(Model.IsLiked ? "" : "-outline")-dark font-btn me-1" id="likeBtn">
+                    <i class="bi bi-hand-thumbs-up-fill"></i><span class="ms-2">@SD.FormatView(Model.LikesCount)</span>
+                </button>
+            </section>
+            <section class="d-flex align-items-center">
+                <button class="btn btn@(Model.IsDisliked ? "" : "-outline")-dark font-btn me-1" id="dislikeBtn">
+                    <i class="bi bi-hand-thumbs-down-fill"></i><span
+                        class="ms-2">@SD.FormatView(Model.DisLikesCount)</span>
+                </button>
+                <form method="post">
+                    <button asp-action="DownloadVideoFile" asp-route-videoId="@Model.Id" type="submit" class="btn btn-outline-secondary font-btn ms-1">Download</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="card border-secondary mb-3">
+            <div class="card-header">
+                <p class="text-danger-emphasis h4">@Model.Title</p>
+                <p>
+                    @SD.TimeAgo(Model.CreatedAt)
+                </p>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <a asp-action="Member" asp-controller="Channel" asp-route-id="@Model.ChannelId"
+                        class="text-primary text-decoration-none">@Model.ChannelName</a>
+                    <p class="text-muted small mb-0">@SD.FormatView(Model.SubscribersCount) subscribers</p>
+                </div>
+                <button id="subscriberBtn" class="btn btn@(Model.IsSubscribe ? "" : "-outline")-dark">
+                    @(Model.IsSubscribe ? "Subscribed" : "Subscribe")
+                </button>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    @Model.Description
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $('#subscriberBtn').on('click', function () {
+            $.ajax({
+                url: "/Video/SubscribeChannel",
+                type: "PUT",
+                data: { channelId: '@Model.ChannelId' },
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        })
+    </script>
+}

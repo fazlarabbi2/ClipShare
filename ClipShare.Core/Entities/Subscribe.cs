@@ -2,6 +2,11 @@
 {
     public class Subscribe
     {
+        public Subscribe(int appUserId, int channelId)
+        {
+            AppUserId = appUserId;
+            ChannelId = channelId;
+        }
 
         // PK (AppUserId, VideId)
         // Fk (AppUserId and FK = VieoId)

@@ -8,7 +8,7 @@
     </div>
 
     <div class="card-body">
-        <form asp-action="CreateEditVideo" id="videoForm" enctype="multipart/form-data">
+        <form asp-action="CreateEditVideo" id="videoForm" method="post" enctype="multipart/form-data">
             @Html.AntiForgeryToken()
             <input type="hidden" id="videoId" asp-for="Id" />
             <input type="hidden" id="imageUrl" asp-for="ImageUrl" />
@@ -18,7 +18,7 @@
                     <div class="mb-3">
                         <label asp-for="CategoryId" class="form-label"></label>
                         <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryDropDown">
-                            <option disabled selected>Select Here</option>
+                            <option disabled value="">Select Here</option>
                         </select>
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
@@ -47,7 +47,8 @@
                     <div class="mb-3">
                         <div class="card mb-2 rounded bg-secondary" id="previewImage" aria-label="Image preview"></div>
                         <label asp-for="ImageUpload" class="form-label"></label>
-                        <input asp-for="ImageUpload" id="imageUpload" type="file" class="form-control" accept="@Model.ImageContentTypes" />
+                        <input asp-for="ImageUpload" id="imageUpload" type="file" class="form-control"
+                            accept="@Model.ImageContentTypes" />
                         <span asp-validation-for="ImageUpload" class="text-danger"></span>
                     </div>
                 </div>
@@ -55,7 +56,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label asp-for="VideoUpload" class="form-label"></label>
-                        <input asp-for="VideoUpload" id="videoUpload" type="file" class="form-control" accept="@Model.VideoContentTypes" />
+                        <input asp-for="VideoUpload" id="videoUpload" type="file" class="form-control"
+                            accept="@Model.VideoContentTypes" />
                         <span asp-validation-for="VideoUpload" class="text-danger"></span>
                     </div>
                 </div>
@@ -72,9 +74,9 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        $(function(){
+        $(function () {
             // display preview Image
-            if($('#videoId').val() > 0){
+            if ($('#videoId').val() > 0) {
                 $('#videoUpload').prop("disabled", true);
 
                 const url = $('#imageUrl').val();
@@ -82,12 +84,12 @@
             }
         })
 
-        $('#imageUpload').on('change', function(){
-            if(this.files){
+        $('#imageUpload').on('change', function () {
+            if (this.files) {
                 $('#previewImage').empty();
                 var reader = new FileReader();
 
-                reader.onload = function(event){
+                reader.onload = function (event) {
                     $('#previewImage').append(`<img src="${event.target.result}" class="card-img-top rounded preview-image"/>`);
                 }
                 reader.readAsDataURL(this.files[0]);

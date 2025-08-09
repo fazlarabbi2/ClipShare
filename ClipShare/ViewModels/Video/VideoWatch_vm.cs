@@ -15,6 +15,7 @@ namespace ClipShare.ViewModels.Video
         public DateTime CreatedAt { get; set; }
         public int LikesCount { get; set; }
         public int DisLikesCount { get; set; }
+        public int ViewersCount { get; set; }
         public int SubscribersCount { get; set; }
     }
 }
